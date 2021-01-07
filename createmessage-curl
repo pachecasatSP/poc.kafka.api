@@ -1,0 +1,16 @@
+curl --location --request POST 'https://localhost:5001/message' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "Messages": [
+        {
+            "topic": "topic-bankly-cliente-adoldfo-2",
+            "Message": "messasgem para adolfo."
+        },
+        {
+            "topic": "topic-bankly-cliente-fred-1",
+            "Message": "Fred é lindo pai."
+        }
+
+
+    ]
+}'
