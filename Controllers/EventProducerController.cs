@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,7 +44,9 @@ namespace api.Controllers
 			{
 				var companyQuantity = value.CompanyQuantity < 1 ? 1 : value.CompanyQuantity;
 				var csv = new StringBuilder();
-				csv.AppendLine("Company");
+				csv.AppendLine("Company;Event");
+				var aggregatedCsv = new StringBuilder();
+				aggregatedCsv.AppendLine("Company;Qtd");
 				var eventPack = new EventPack
 				{
 					Id = Guid.NewGuid(),
@@ -53,13 +56,17 @@ namespace api.Controllers
 				for (var i = 0; i < value.EventQuantity; i++)
 				{
 					var company = $"company{new Random().Next(1, companyQuantity)}";
+					var @event = $"EventMessage{i}";
 					eventPack.Events.Add(new Event
 					{
 						CompanyKey = company,
-						EventMessage = $"EventMessage{i}"
+						EventMessage = @event
 					});
-					csv.AppendLine(company);
+					csv.AppendLine($"{company};{@event}");
 				}
+
+				foreach (var item in eventPack.Events.GroupBy(e => e.CompanyKey).Select(g => $"{g.Key};{g.Count()}"))
+					aggregatedCsv.AppendLine(item);
 
 				using (var producer = new ProducerBuilder<Null, string>(_producerConfig).Build())
 				{
@@ -71,6 +78,7 @@ namespace api.Controllers
 
 					System.IO.Directory.CreateDirectory(_filePath);
 					await System.IO.File.WriteAllTextAsync($"{_filePath}{_fileName}", csv.ToString());
+					await System.IO.File.WriteAllTextAsync($"{_filePath}aggregated_{_fileName}", aggregatedCsv.ToString());
 
 					return Created("", result);
 				}
