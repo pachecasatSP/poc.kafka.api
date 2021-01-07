@@ -1,0 +1,8 @@
+curl --location --request PUT 'https://localhost:5001/topic' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "pattern" : "topic-bankly-cliente-fred-1",
+    "quantity": 1,
+    "partitionNumber" : 1,
+    "replicationFactor" : 3
+}'
