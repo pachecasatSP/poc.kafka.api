@@ -21,6 +21,7 @@ namespace api.Controllers
 		private readonly ProducerConfig _producerConfig;
 		private readonly string _topic;
 		private readonly string _filePath;
+		private readonly string _fileName;
 
 		public EventProducerController(ILogger<EventProducerController> logger, IConfiguration config)
 		{
@@ -33,6 +34,7 @@ namespace api.Controllers
 			};
 			_topic = _config.GetSection("Kafka:GenericTopic").Value;
 			_filePath = _config.GetSection("Kafka:OutputFileFolder").Value;
+			_fileName= _config.GetSection("Kafka:FileName").Value;
 		}
 
 		public async Task<IActionResult> Post([FromBody] EventProducerRequest value)
@@ -53,7 +55,8 @@ namespace api.Controllers
 					var company = $"company{new Random().Next(1, companyQuantity)}";
 					eventPack.Events.Add(new Event
 					{
-						Company = company
+						CompanyKey = company,
+						EventMessage = $"EventMessage{i}"
 					});
 					csv.AppendLine(company);
 				}
@@ -66,8 +69,8 @@ namespace api.Controllers
 					};
 					var result = await producer.ProduceAsync(_topic, msg);
 
-					await System.IO.File.WriteAllTextAsync(_filePath, csv.ToString());
-
+					System.IO.Directory.CreateDirectory(_filePath);
+					await System.IO.File.WriteAllTextAsync($"{_filePath}{_fileName}", csv.ToString());
 
 					return Created("", result);
 				}

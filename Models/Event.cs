@@ -4,7 +4,9 @@ namespace api.Models
 {
 	public class Event
 	{
-		[JsonProperty("company")]
-		public string Company { get; set; }
+		[JsonProperty("companyKey")]
+		public string CompanyKey { get; set; }
+		[JsonProperty("eventMessage")]
+		public string EventMessage { get; set; }
 	}
 }
