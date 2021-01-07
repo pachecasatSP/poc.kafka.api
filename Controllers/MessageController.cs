@@ -15,12 +15,12 @@ namespace api.Controllers
     [ApiController]
     public class MessageController : ControllerBase
     {
-        private ILogger<MessageController> _logger;
-        private IConfiguration _config;
+        private readonly ILogger<MessageController> _logger;
+        private readonly IConfiguration _config;
 
         public string KafkaServer { get; }
 
-        private ProducerConfig _producerConfig;
+        private readonly ProducerConfig _producerConfig;
 
         public MessageController(ILogger<MessageController> logger,
                                  IConfiguration config)
@@ -28,7 +28,11 @@ namespace api.Controllers
             _logger = logger;
             _config = config;
             KafkaServer = _config.GetSection("Kafka:ServerAndPort").Value;
-            _producerConfig = new ProducerConfig { BootstrapServers = KafkaServer, Partitioner = Partitioner.Random };
+            _producerConfig = new ProducerConfig
+            {
+                BootstrapServers = KafkaServer,
+                Partitioner = Partitioner.Random
+            };
         }
 
         [HttpPost]
@@ -46,7 +50,6 @@ namespace api.Controllers
                 {
                     await producer.ProduceAsync(m.Topic, new Message<Null, string> { Value = m.Message });
                 }
-                
             };
         }
     }

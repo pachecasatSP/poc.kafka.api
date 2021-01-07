@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using api.Context;
-using api.Models;
+﻿using api.Models;
 using Confluent.Kafka;
 using Confluent.Kafka.Admin;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace api.Controllers
 {
-    [ApiController]
+	[ApiController]
     [Route("topic")]
     public class TopicController : ControllerBase
     {

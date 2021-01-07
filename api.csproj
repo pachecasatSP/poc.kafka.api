@@ -9,9 +9,5 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Api.Poc.Domain\Api.Poc.Domain.csproj" />
-  </ItemGroup>
-
 
 </Project>
